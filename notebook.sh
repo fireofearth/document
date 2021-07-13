@@ -1,4 +1,4 @@
-conda activate trajectron-cplex
+conda activate ml
 jupyter notebook \
 	--NotebookApp.iopub_data_rate_limit=1.0e10 \
 	--no-browser \
