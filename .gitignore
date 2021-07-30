@@ -1,4 +1,6 @@
 **/models
 **/data
 **/figs
+**/logs
+**/.ipynb_checkpoints
 .jupyter
