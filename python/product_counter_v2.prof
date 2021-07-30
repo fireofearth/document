@@ -1,0 +1,15 @@
+         1007 function calls in 0.149 seconds
+
+   Ordered by: cumulative time
+
+   ncalls  tottime  percall  cumtime  percall filename:lineno(function)
+        1    0.000    0.000    0.149    0.149 <ipython-input-32-b9f1fcae7555>:3(product_counter_v2)
+        1    0.148    0.148    0.148    0.148 <ipython-input-32-b9f1fcae7555>:10(create_counter_v2)
+        1    0.000    0.000    0.000    0.000 <ipython-input-31-12f638bf1eff>:19(sort_counter)
+        1    0.000    0.000    0.000    0.000 {built-in method builtins.sorted}
+        1    0.000    0.000    0.000    0.000 <ipython-input-31-12f638bf1eff>:20(<dictcomp>)
+     1000    0.000    0.000    0.000    0.000 <ipython-input-31-12f638bf1eff>:21(<lambda>)
+        1    0.000    0.000    0.000    0.000 {method 'items' of 'dict' objects}
+        1    0.000    0.000    0.000    0.000 {method 'disable' of '_lsprof.Profiler' objects}
+
+
