@@ -142,5 +142,5 @@ plt.xlabel(f"episode #")
 plt.show()
 
 # with open(f"qtable-{int(time.time())}.plt", 'wb') as f:
-with open("diy-qtable.plt", 'wb') as f:
+with open("models/diy-qtable.plt", 'wb') as f:
     pickle.dump(q_table, f)

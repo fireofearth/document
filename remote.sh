@@ -1,5 +1,9 @@
-conda activate ml
+conda activate ml7
+
+# CPLEX is optional
+export CPLEX_STUDIO_DIR1210=/opt/ibm/ILOG/CPLEX_Studio1210
+
 jupyter notebook \
 	--NotebookApp.iopub_data_rate_limit=1.0e10 \
 	--no-browser \
-	--ip 192.168.1.68 \
+	--ip 192.168.1.71 \
