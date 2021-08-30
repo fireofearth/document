@@ -1,0 +1,18 @@
+         56 function calls (26 primitive calls) in 0.089 seconds
+
+   Ordered by: cumulative time
+   List reduced from 11 to 10 due to restriction <10>
+
+   ncalls  tottime  percall  cumtime  percall filename:lineno(function)
+        1    0.000    0.000    0.089    0.089 <ipython-input-33-0fe425e5770d>:3(product_counter_v3)
+        1    0.000    0.000    0.089    0.089 __init__.py:540(__init__)
+        1    0.000    0.000    0.089    0.089 __init__.py:608(update)
+        1    0.089    0.089    0.089    0.089 {built-in method _collections._count_elements}
+        1    0.000    0.000    0.000    0.000 {built-in method builtins.isinstance}
+        1    0.000    0.000    0.000    0.000 abc.py:96(__instancecheck__)
+        1    0.000    0.000    0.000    0.000 {built-in method _abc._abc_instancecheck}
+     16/1    0.000    0.000    0.000    0.000 abc.py:100(__subclasscheck__)
+     16/1    0.000    0.000    0.000    0.000 {built-in method _abc._abc_subclasscheck}
+       16    0.000    0.000    0.000    0.000 _collections_abc.py:392(__subclasshook__)
+
+
