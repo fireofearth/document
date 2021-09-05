@@ -162,22 +162,22 @@ class BlobEnv(object):
 
 
 config = util.AttrDict(
-    episodes=20_000,
-    map_channels=3,
-    patch_size=[10, 10],
-    action_space_size=9,
-    replay_memory_maxlen=50_000,
-    replay_memory_minlen=1_000,
-    minibatch_size=64,
-    learning_rate=0.001,
-    discount=0.99,
-    update_target_interval=5,
-    eps_start=0.5,
-    eps_end=0.001,
-    eps_decay=0.99975,
-    show_preview=False,
-    aggregate_stats_interval=50
-)
+        episodes=20_000,
+        map_channels=3,
+        patch_size=[10, 10],
+        action_space_size=9,
+        replay_memory_maxlen=50_000,
+        replay_memory_minlen=1_000,
+        minibatch_size=64,
+        learning_rate=0.001,
+        discount=0.99,
+        update_target_interval=5,
+        eps_start=0.5,
+        eps_end=0.001,
+        eps_decay=0.99975,
+        show_preview=False,
+        aggregate_stats_interval=50,
+        grad_clip_to=1)
 
 env = BlobEnv()
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
@@ -258,6 +258,7 @@ class DQNAgent(object):
         self.epsilon = config.eps_start
         self.eps_end = config.eps_end
         self.eps_decay = config.eps_decay
+        self.grad_clip_to = config.grad_clip_to
         self.policy_net = DQNet(config).to(device)
         self.target_net = DQNet(config).to(device)
         self.target_net.eval()
@@ -328,8 +329,7 @@ class DQNAgent(object):
         self.optimizer.zero_grad()
         loss = self.criterion(curr_Qs, expected_Qs)
         loss.backward()
-        # for param in self.policy_net.parameters():
-        #     param.grad.data.clamp_(-1, 1)
+        nn.utils.clip_grad_value_(self.policy_net.parameters(), self.grad_clip_to)
         self.optimizer.step()
         # Update target model if necessary
         if is_terminal_state:
