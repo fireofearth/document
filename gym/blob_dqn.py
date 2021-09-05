@@ -266,7 +266,6 @@ class DQNAgent(object):
         datestr = datetime.now().strftime("%m-%d-%Y_%H-%M-%S")
         self.log_dir = f"{self.MODEL_DIR}/{datestr}"
         self.writer = SummaryWriter(log_dir=self.log_dir)
-        self.terminal_state_counter = 0
         self.optimizer = optim.Adam(self.policy_net.parameters(), lr=config.learning_rate)
         self.criterion = nn.MSELoss()
 
@@ -334,7 +333,7 @@ class DQNAgent(object):
         # Update target model if necessary
         if is_terminal_state:
             self.terminal_state_counter += 1
-        if is_terminal_state > self.update_target_interval:
+        if self.terminal_state_counter > self.update_target_interval:
             self.__update_target_model()
         return loss.item()
 
@@ -376,7 +375,7 @@ def train(config):
         episode_rewards.append(episode_reward)
         avg_losses = sum(episode_losses) / len(episode_losses)
         agent.writer.add_scalar('avg_loss', avg_losses, episode)
-        if episode % config.aggregate_stats_interval == 0 and episode == 1:
+        if episode % config.aggregate_stats_interval == 0 or episode == 1:
             episode_rewards = episode_rewards[-config.aggregate_stats_interval:]
             avg_reward = sum(episode_rewards) / len(episode_rewards)
             min_reward = min(episode_rewards)
