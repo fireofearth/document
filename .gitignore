@@ -6,3 +6,4 @@ __pycache__/
 **/figs
 **/.ipynb_checkpoints
 .jupyter
+*.h5
