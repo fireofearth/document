@@ -329,7 +329,8 @@ class DQNAgent(object):
         self.optimizer.zero_grad()
         loss = self.criterion(curr_Qs, expected_Qs)
         loss.backward()
-        nn.utils.clip_grad_value_(self.policy_net.parameters(), self.grad_clip_to)
+        # doesn't work?
+        # nn.utils.clip_grad_value_(self.policy_net.parameters(), self.grad_clip_to)
         self.optimizer.step()
         # Update target model if necessary
         if is_terminal_state:
