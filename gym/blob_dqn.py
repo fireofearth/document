@@ -1,6 +1,7 @@
 import os
 import math
 import random
+import numbers
 from datetime import datetime
 from collections import namedtuple, deque
 
@@ -161,22 +162,22 @@ class BlobEnv(object):
 
 
 config = util.AttrDict(
-    episodes=20_000,
-    map_channels=3,
-    patch_size=[10, 10],
-    action_space_size=9,
-    replay_memory_maxlen=50_000,
-    replay_memory_minlen=1_000,
-    minibatch_size=64,
-    learning_rate=0.001,
-    discount=0.99,
-    update_target_interval=5,
-    eps_start=0.5,
-    eps_end=0.001,
-    eps_decay=0.99975,
-    show_preview=False,
-    aggregate_stats_interval=50
-)
+        episodes=20_000,
+        map_channels=3,
+        patch_size=[10, 10],
+        action_space_size=9,
+        replay_memory_maxlen=50_000,
+        replay_memory_minlen=1_000,
+        minibatch_size=64,
+        learning_rate=0.001,
+        discount=0.99,
+        update_target_interval=5,
+        eps_start=0.5,
+        eps_end=0.001,
+        eps_decay=0.99975,
+        show_preview=False,
+        aggregate_stats_interval=50,
+        grad_clip_to=1)
 
 env = BlobEnv()
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
@@ -257,6 +258,7 @@ class DQNAgent(object):
         self.epsilon = config.eps_start
         self.eps_end = config.eps_end
         self.eps_decay = config.eps_decay
+        self.grad_clip_to = config.grad_clip_to
         self.policy_net = DQNet(config).to(device)
         self.target_net = DQNet(config).to(device)
         self.target_net.eval()
@@ -266,7 +268,6 @@ class DQNAgent(object):
         datestr = datetime.now().strftime("%m-%d-%Y_%H-%M-%S")
         self.log_dir = f"{self.MODEL_DIR}/{datestr}"
         self.writer = SummaryWriter(log_dir=self.log_dir)
-        self.terminal_state_counter = 0
         self.optimizer = optim.Adam(self.policy_net.parameters(), lr=config.learning_rate)
         self.criterion = nn.MSELoss()
 
@@ -328,13 +329,12 @@ class DQNAgent(object):
         self.optimizer.zero_grad()
         loss = self.criterion(curr_Qs, expected_Qs)
         loss.backward()
-        # for param in self.policy_net.parameters():
-        #     param.grad.data.clamp_(-1, 1)
+        nn.utils.clip_grad_value_(self.policy_net.parameters(), self.grad_clip_to)
         self.optimizer.step()
         # Update target model if necessary
         if is_terminal_state:
             self.terminal_state_counter += 1
-        if is_terminal_state > self.update_target_interval:
+        if self.terminal_state_counter > self.update_target_interval:
             self.__update_target_model()
         return loss.item()
 
@@ -369,18 +369,19 @@ def train(config):
                     torch.tensor([reward], dtype=torch.float, device=device),
                     torch.tensor([is_done],dtype=torch.bool, device=device))
             loss = agent.train(is_terminal_state=is_done)
-            episode_losses.append(loss)
+            if isinstance(loss, numbers.Number):
+                episode_losses.append(loss)
             curr_state = next_state
 
         agent.update_epsilon()
         episode_rewards.append(episode_reward)
-        avg_losses = sum(episode_losses) / len(episode_losses)
+        avg_losses = sum(episode_losses) / len(episode_losses) if len(episode_losses) > 0 else 0.
         agent.writer.add_scalar('avg_loss', avg_losses, episode)
-        if episode % config.aggregate_stats_interval == 0 and episode == 1:
-            episode_rewards = episode_rewards[-config.aggregate_stats_interval:]
-            avg_reward = sum(episode_rewards) / len(episode_rewards)
-            min_reward = min(episode_rewards)
-            max_reward = max(episode_rewards)
+        if episode % config.aggregate_stats_interval == 0 or episode == 1:
+            _episode_rewards = episode_rewards[-config.aggregate_stats_interval:]
+            avg_reward = sum(_episode_rewards) / len(_episode_rewards)
+            min_reward = min(_episode_rewards)
+            max_reward = max(_episode_rewards)
             agent.writer.add_scalar('avg_reward', avg_reward, episode)
             agent.writer.add_scalar('min_reward', min_reward, episode)
             agent.writer.add_scalar('max_reward', max_reward, episode)
