@@ -1,29 +1,10 @@
-data:
-  celebA_center_crop: false
-  classes: []
-  dataset_name: images
-  fid_file: null
-  img_size: 64
-  path: data/comprehensive_cars/images/*.jpg
-  random_crop: false
-  use_tanh_range: false
-method: giraffe
-model:
-  background_generator: simple
-  background_generator_kwargs:
-    downscale_p_by: 12
-    hidden_size: 64
-    n_blocks: 4
-    skips: []
-  bounding_box_generator: simple
-  bounding_box_generator_kwargs: {}
-  decoder: simple
-  decoder_kwargs: {}
-  discriminator: dc
-  discriminator_kwargs: {}
-  generator: simple
-  generator_kwargs: {}
-  neural_renderer: simple
-  neural_renderer_kwargs: {}
-  z_dim: 256
-  z_dim_bg: 128
+&id002 !!python/object/new:utility.AttrDict
+dictitems:
+  data: &id001 !!python/object/new:utility.AttrDict
+    dictitems:
+      celebA_center_crop: false
+    state: *id001
+  method: giraffe
+  model:
+    background_generator: simple
+state: *id002
