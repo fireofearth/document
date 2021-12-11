@@ -1,3 +1,4 @@
+conda activate ml8
 
 # CPLEX is optional
 export CPLEX_STUDIO_DIR1210=/opt/ibm/ILOG/CPLEX_Studio1210
