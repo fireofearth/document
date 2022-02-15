@@ -5,6 +5,10 @@ Guide on using PyTest.
 
 Currently describes the use of subdirectories and fixtures in-heritance.
 
+## Quick-start
+
+Install the `pytest` package and call `pytest`.
+
 ## Logging
 
 Running `pytest --capture=tee-sys` allows capturing and passing of STDERR and STDOUT,
