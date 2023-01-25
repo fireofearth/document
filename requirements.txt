@@ -1,0 +1,10 @@
+opencv-python
+pyyaml
+matplotlib
+Shapely
+GitPython
+networkx
+tabulate
+scipy
+pandas
+numpy

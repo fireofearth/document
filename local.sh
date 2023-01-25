@@ -1,4 +1,4 @@
 #!/bin/sh
 
-conda activate ml
-jupyter notebook
+source py38/bin/activate
+jupyter lab
